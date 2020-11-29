@@ -23,7 +23,7 @@ spec:
           livenessProbe:
             tcpSocket:
               #path: '/actuator/health'
-              port: 8081
+              port: 8085
             initialDelaySeconds: 15
             #timeoutSeconds: 2
             periodSeconds: 20
