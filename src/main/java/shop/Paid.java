@@ -4,6 +4,7 @@ package shop;
 public class Paid extends AbstractEvent {
 
     private Long id;
+    private String status;
 
     public Long getId() {
         return id;
@@ -12,4 +13,6 @@ public class Paid extends AbstractEvent {
     public void setId(Long id) {
         this.id = id;
     }
+
+    public String getStatus() {return status;}
 }

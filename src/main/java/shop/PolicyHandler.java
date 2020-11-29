@@ -8,6 +8,9 @@ import org.springframework.cloud.stream.annotation.StreamListener;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 
+import java.util.Iterator;
+import java.util.Optional;
+
 @Service
 public class PolicyHandler{
 
@@ -35,15 +38,31 @@ public class PolicyHandler{
     @StreamListener(KafkaProcessor.INPUT)
     public void wheneverPaid_Ship(@Payload Paid paid){
 
-        if(paid.isMe()){
-            System.out.println("##### listener Ship : " + paid.toJson());
-            Delivery delivery = new Delivery();
-            delivery.setDeliveryStatus("ordered");
-            System.out.println("Delivery start");
+        if(paid.isMe()) {
 
-            deliveryRepository.save(delivery);
+
+            int flag = 0;
+            Iterator<Delivery> iterator = deliveryRepository.findAll().iterator();
+            while (iterator.hasNext()) {
+
+                Delivery deliveryTmp = iterator.next();
+                if ((deliveryTmp.getId() == paid.getId()) && paid.getStatus().equals("ordered")) {
+                    Optional<Delivery> DeliveryOptional = deliveryRepository.findById(deliveryTmp.getId());
+                    Delivery delivery = DeliveryOptional.get();
+                    delivery.setDeliveryStatus("ordered!");
+                    deliveryRepository.save(delivery);
+                    //flag=1;
+                }
+
+
+                //System.out.println("##### listener Ship : " + paid.toJson());
+                //Delivery delivery = new Delivery();
+                //delivery.setDeliveryStatus("ordered");
+                //System.out.println("Delivery start");
+
+                //deliveryRepository.save(delivery);
+            }
         }
-
     }
 
 }
